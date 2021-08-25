@@ -1,0 +1,7 @@
+{
+  "name": "vue-calendarApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
