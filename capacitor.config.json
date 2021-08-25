@@ -1,6 +1,0 @@
-{
-	"appId": "io.ionic.starter",
-	"appName": "vue-calendarApp",
-	"webDir": "dist",
-	"bundledWebRuntime": false
-}
