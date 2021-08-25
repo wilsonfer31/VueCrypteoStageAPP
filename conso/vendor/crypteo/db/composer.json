@@ -1,0 +1,22 @@
+{
+  "name": "crypteo/db",
+  "type" : "library",
+  "description": "Database ORM.",
+  "keywords": ["db"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dorian Boissonnade",
+      "email": "dboissonnade@crypteo.com"
+    }
+  ],
+  "require": {   
+  },
+    "autoload": {
+        "classmap": [
+            "src"
+        ]
+    },
+  "require-dev": {    
+  }
+}

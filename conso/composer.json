@@ -1,0 +1,26 @@
+{
+    "name": "crypteo/skeleton",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/opt/wwwroot/_packages/crypteo/php-view"
+        },
+        {
+            "type": "path",
+            "url": "/opt/wwwroot/_packages/crypteo/db"
+        },
+	{
+	   "type": "vcs",
+           "url": "https://github.com/olivierwizi/wiziyousignclient/"
+	}
+
+    ],
+    "require": {
+        "crypteo/db": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            
+        }
+    }
+}

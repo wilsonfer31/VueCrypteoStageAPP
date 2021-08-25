@@ -1,0 +1,365 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Utilisateurs avec numero </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+	<script src='https://unpkg.com/axios/dist/axios.min.js'></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+
+	<style>
+		body {
+			background-color: gray;
+			margin: 1em;
+		}
+
+		.realRed td {
+			background-color: red;
+		}
+
+		.realGreen {
+			background-color: green;
+		}
+
+		.green td{
+			background-color: #32CD32;
+		}
+
+		.red td{
+			background-color: #ff4c4c;
+		}
+
+		tr.orange td {
+			background-color: orange;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div id='myapp'>
+
+		<!-- Select All records -->
+		<br>
+		<input id='allUsers' type='button' @click='allUsers();' value='Tous les utilisateurs' class="btn btn-primary">
+
+
+		<!-- Select record by ID -->
+		<input id='searchByNumber' type='button' @click='recordByNumber()' value='Chercher par numero'
+			class="btn btn-primary">
+
+		<input type='text' v-model='number'>
+
+		<br>
+
+		<!-- List records -->
+		<table border='1' width='80%' style='border-collapse: collapse;' class="table table-striped">
+			<tr class="thead-dark">
+				<th scope="col">Numero</th>
+				<th scope="col">Site </th>
+				<th scope="col">Info </th>
+				<th scope="col">Date de renouvellement </th>
+				<th scope="col">Type de service</th>
+				<th scope="col">Abonnement</th>
+				<th scope="col">Utilisation(GO)</th>
+				<th scope="col">Percentage</th>
+				<th scope="col">Parametrage Alerte</th>
+				<th scope="col">Alerte</th>
+			</tr>
+
+			<tr :class='changeColor(user)' v-for='user in users'>
+				<td >{{ user.calling_number }}</td>
+				<td >{{user.name}}</td>
+				<td > {{user.info}} </td>
+				<td >{{ user.date_update}}</td>
+				<td >{{ user.destination_label }}</td>
+				<td >
+					<p contenteditable @blur="sub(user, $event)">{{user.contract}}</p>
+				</td>
+				<td >{{ user.allData }} </td>
+				<td >{{ ((user.allData / user.contract) *100).toFixed(1)+ ' %' }} </td>
+				<td >
+
+					<p contenteditable @blur="blur(user, $event)">{{user.alert}}</p>
+
+				</td>
+				<td ><input :checked="user.alert_active==1?true:false" type="checkbox"
+						@change="check(user, $event)">
+				</td>
+			</tr>
+		</table>
+
+
+		<!-- Next Page and Last-->
+		<nav aria-label="Page navigation example">
+			<ul class="pagination">
+				<li class="page-item"><a @click='records(false)' class="page-link" href="#">Previous</a></li>
+
+
+				<ul class="pagination" v-for="pages in nbOfPages">
+					<li :class="ChangeStatusPages(pages)"><a @click='goToPage(pages)' class="page-link"
+							href="#">{{pages}}</a> </li>
+				</ul>
+				<li class="page-item"><a @click='records(true)' class="page-link" href="#">Next</a></li>
+			</ul>
+		</nav>
+
+
+	</div>
+
+	<!-- Script -->
+	<script>
+		var app = new Vue({
+			el: '#myapp',
+			data: {
+				users: "",
+				number: "",
+				PageValue: 0,
+				isChecked: 0,
+				getPageNumber: 0,
+				nbOfPages: [],
+				sizeOfTable: 10
+
+
+
+			},
+			mounted: function () {
+				this.calculPages() // Calls the method before page loads
+				this.allUsers()
+			},
+			methods: {
+				check: function (user, event) {
+					if (event.target.checked) {
+						this.isChecked = 1;
+					} else {
+						this.isChecked = 0;
+
+					}
+					axios.get('dbrequest.php', {
+						params: {
+							isChecked: this.isChecked,
+							number: user.calling_number
+						}
+					})
+				},
+				sub: function (user, event) {
+					axios.get('dbrequest.php', {
+						params: {
+							sub: event.target.textContent,
+							number: user.calling_number
+						}
+					}).then(function () {
+						user.contract = event.target.textContent
+					});
+				},
+				blur: function (user, event) {
+					axios.get('dbrequest.php', {
+						params: {
+							alertGigas: event.target.textContent,
+							number: user.calling_number
+						}
+
+					}).then(function () {
+						user.alert = event.target.textContent
+
+					});
+
+
+
+				},
+				recordByNumber: function () {
+					if (this.number > 0) {
+
+						axios.get('dbrequest.php', {
+							params: {
+								utilisateurid: this.number
+							}
+						})
+							.then(function (response) {
+								app.users = response.data;
+								app.users.forEach(element => {
+									element.allData = (element.allData / 1000000).toFixed(2);
+								});
+
+							})
+
+					}
+
+				},
+				records: function (nextPage) {
+					if (nextPage) {
+
+						this.PageValue += this.sizeOfTable,
+
+
+							axios.get('dbrequest.php', {
+								params: {
+									PageValue: this.PageValue,
+									limit: this.sizeOfTable,
+								}
+							})
+								.then(function (response) {
+									app.users = response.data;
+									app.users.forEach(element => {
+										element.allData = (element.allData / 1000000).toFixed(2);
+
+									});
+
+								})
+
+
+					} else {
+						if (this.PageValue > 0) {
+
+							this.PageValue -= this.sizeOfTable,
+
+								axios.get('dbrequest.php', {
+									params: {
+										PageValue: this.PageValue,
+										limit: this.sizeOfTable,
+									}
+								})
+									.then(function (response) {
+										app.users = response.data;
+										app.users.forEach(element => {
+											element.allData = (element.allData / 1000000).toFixed(2);
+
+
+										});
+									})
+
+
+
+						}
+					}
+				},
+				allUsers: function () {
+					this.PageValue = 0;
+					axios.get('dbrequest.php', {
+						params: {
+							limit: this.sizeOfTable,
+						}
+					})
+						.then(function (response) {
+							app.users = response.data;
+
+
+							app.users.forEach(element => {
+								element.allData = (element.allData / 1000000).toFixed(2);
+
+
+							});
+
+						})
+
+
+
+
+
+				},
+
+				changeColor: function (user) {
+
+
+					if (((user.allData / user.contract) * 100).toFixed(0) > 95)
+						return 'realRed';
+					else if (((user.allData / user.contract) * 100).toFixed(0) > 80)
+						return 'red';
+					else if (((user.allData / user.contract) * 100).toFixed(0) > 60)
+						return 'orange';
+					else if (((user.allData / user.contract) * 100).toFixed(0) > 50)
+						return 'realGreen';
+					else {
+						return 'green';
+					}
+
+
+
+				},
+
+				calculPages: function () {
+					const self = this;
+					axios.get('dbrequest.php', {
+						params: {
+							getPage: this.getPageNumber,
+
+						}
+					})
+						.then(function (response) {
+
+
+							for (let i = 1; i <= Math.ceil(((response.data[0].nbOfUsers) / self.sizeOfTable)); i++) {
+								self.nbOfPages.push(i);
+							}
+
+
+
+
+						})
+
+				},
+				goToPage(PageNumber) {
+					if (PageNumber == 1) {
+						this.PageValue = 0;
+					} else {
+						this.PageValue = (PageNumber - 1) * 10;
+					}
+
+
+					axios.get('dbrequest.php', {
+						params: {
+							PageValue: this.PageValue,
+							limit: this.sizeOfTable,
+
+						}
+					})
+						.then(function (response) {
+
+							app.users = response.data;
+
+
+							app.users.forEach(element => {
+								element.allData = (element.allData / 1000000).toFixed(2);
+
+
+							});
+
+
+
+
+						})
+				},
+				ChangeStatusPages(pages) {
+					pageActive = (pages - 1) * this.sizeOfTable;
+
+					if (this.PageValue == pageActive && pages == 1)
+						return 'page-item active';
+					else if (this.PageValue == pageActive && pages == 2) {
+						return 'page-item active';
+					} else {
+						return 'page-item';
+					}
+				}
+
+			},
+
+		})
+
+
+
+	</script>
+
+</body>
+
+</html>

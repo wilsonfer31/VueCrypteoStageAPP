@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "278eedc66017a2f4e47f4d09ff502fd5",
+    "packages": [
+        {
+            "name": "crypteo/db",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "/opt/wwwroot/_packages/crypteo/db",
+                "reference": "a905a722292e5d95166adf9d9b9e4e975d992a08"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dorian Boissonnade",
+                    "email": "dboissonnade@crypteo.com"
+                }
+            ],
+            "description": "Database ORM.",
+            "keywords": [
+                "db"
+            ],
+            "transport-options": {
+                "relative": false
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "crypteo/db": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
+}

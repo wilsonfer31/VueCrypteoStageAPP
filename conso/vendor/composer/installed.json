@@ -1,0 +1,40 @@
+{
+    "packages": [
+        {
+            "name": "crypteo/db",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "/opt/wwwroot/_packages/crypteo/db",
+                "reference": "a905a722292e5d95166adf9d9b9e4e975d992a08"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dorian Boissonnade",
+                    "email": "dboissonnade@crypteo.com"
+                }
+            ],
+            "description": "Database ORM.",
+            "keywords": [
+                "db"
+            ],
+            "transport-options": {
+                "relative": false
+            },
+            "install-path": "../crypteo/db"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
