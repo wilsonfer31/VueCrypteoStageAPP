@@ -252,7 +252,7 @@ export default {
           this.fees.drive = {};
           this.fees.drive.user_id = this.fees.user_id;
           this.fees.drive.km = this.fees.km;
-          this.fees.ttc = null; //// TTC NOT DEF
+          this.fees.ttc = null; 
           this.fees.tva = null;
           this.fees.drive.name = this.fees.drive_place;
 
